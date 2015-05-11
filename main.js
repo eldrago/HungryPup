@@ -6,7 +6,7 @@ var fs = require('fs');
 var messager = require('./messager.js'); //require messager
 var feed = require('./feed.js');
 var config;
-var date = new Date();
+date = new Date();  //will this work globally
 
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the console
 
@@ -16,8 +16,20 @@ feedNowButton.dir(mraa.DIR_IN); //set the gpio direction to input
 var theLCD = new LCD.Jhd1313m1(0, 0x3E, 0x62);
 theLCD.setColor(200,100,0);
 
+
 periodicActivity(); //call the periodicActivity function
 
+/*  attempting to make this more event driven, and pull in other functions to main.js this part 
+Involves the LCD update.  Taking it out of the periodicActivity thread so it runs concurrently
+
+setInterval (function({clock(date.toLocaleTimeString);},500); //updates the LCD every half a second
+/**************************************************
+function clock(myTime)
+{
+    theLCD.setCursor(0,0);
+    theLCD.write(myTime);
+}
+/******************************************* ******/
 
 /*****************************************************************************/
 
@@ -31,9 +43,10 @@ function periodicActivity()
     } catch (e) {
         console.log(e);
     }
+/*  edited out for testing
     theLCD.setCursor(0,0);
     theLCD.write(mytime);
-    
+*/    
     // Checks against feeding schedule.. if it is time to eat the dogs eat.  Feeding schedule is currently reloaded every second... need to add events.. but hey this works
     if (mytime == config.feedingSchedule[0].time && config.feedingSchedule[0].enabled){
         console.log("feeding the dog due to schedule " + config.feedingSchedule[0].id);
