@@ -11,19 +11,23 @@
 // feedTheAnimal(amount) - runs through the feeding process, enables motor keeps it on for amount * 1 second , then turns motor off
 // sendMessage(messID) - sends a text message via twilio API to defined cell phone.  Message contents are determined by messID integer.
 // periodicActivity() - runs every second, checks to see if it time to feed the animal, and monitors for feedNow button.  If it is time to feed it begins the feeding process.  
+// HopperMonitor() - returns status of hopper
+// BowlMonitor() - returns status of bowl
 
 // ToDo:
 // make more event driven
-// Add hopperMonitor() - monitors hopper.  Sends message if hopper is getting low, or empty
-// Add webServer() drives webserver
+// Add webserver
 
 // Recent Changes:
+// added monitors 
 // Incorporated all functions into this one file... may be broken up in the future.
 // Added a hella lot of commenting
+// moved all pin initialization to main section of the code.
 
 
-// main section of the code
 /***********************************************************************************************************************************************/
+// main section of the code
+/**********************************************************************************************************************************************/
 var LCD = require("jsupm_i2clcd");
 var mraa = require('mraa'); //require mraa
 var fs = require('fs'); // required to interact with file system on Edison
@@ -32,11 +36,30 @@ date = new Date();  //will this work globally
 
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the console
 
-var feedNowButton = new mraa.Gpio(6); //setup digital read for feed now button on Digital pin #6 (D6)
-feedNowButton.dir(mraa.DIR_IN); //set the gpio direction to input
+// setup pins on edison
+// i2c devices
+var theLCD = new LCD.Jhd1313m1(0, 0x3E, 0x62);  // initialize the LCD interface 
 
-var theLCD = new LCD.Jhd1313m1(0, 0x3E, 0x62);  // initialize the LCD interface
-theLCD.setColor(200,100,0);      // sets LCD color
+// digital in devices
+/*  currently unconnected pins
+var hopperFullDetect = new mraa.Gpio(2);
+var hopperMidDetect = new mraa.Gpio(3); 
+var hopperLowDetect = new mraa.Gpio(4); 
+var lidDetect = new mraa.Gpio(1);
+*/
+var feedNowButton = new mraa.Gpio(6); 
+
+// set direction on GPIO pins to input
+/* currently unconnected pins
+hopperFullDetect.dir(mraa.DIR_IN); 
+hopperMidDetect.dir(mraa.DIR_IN); 
+hopperLowDetect.dir(mraa.DIR_IN); 
+lidDetect.dir(mraa.DIR_IN);
+*/
+feedNowButton.dir(mraa.DIR_IN); 
+
+// PWM devices 
+ var motor = new mraa.Pwm(5);
 
 // attempt to parse config file, and put the info into the config object
 try {
@@ -58,27 +81,64 @@ fswatch(__dirname + '/config.json', function(event, filename) {
 		console.log(e);
     }
 }
-	
-setInterval (function({clock(date.toLocaleTimeString);},500); //updates the LCD every half a second
+
+theLCD.setColor(200,100,0);      // sets LCD color
+setInterval (function({clock(date.toLocaleTimeString);},1000); //updates the LCD every second
 setInterval (function({periodicActivity();},1000); //calls the periodicActivity function every second
 
 /***********************************************************************************************************************************************/
-// clock updates the LCD with the current time.
+// hopperMonitor - returns status of the hopper ... returns 0 if empty, 1 if low, 2 if partially filled, 3 if full.  Note digital checks are
+// currently commented out because hardware is not attached
+/***********************************************************************************************************************************************/
+function HopperMonitor(){
+/*
+
+	var fullDetectValue = fullDetect.read();
+	var midDetectValue = midDetect.read();
+	var lowDetectValue = lowDetect.read();
+	
+	// checks the capacitive sensors from Full to Low, returning appropriate value.  If all the sensors == 0 then it returns low.
+	if (fullDetect == 1){  // might be able to do if (fullDetect)
+		return 3;
+	} else if (midDetect == 1){
+		return 2;
+	} else if (lowDetect ==1){
+		return 1;
+	} else {
+		return 0;
+	}
+*/
+	return 3;
+}
+/***********************************************************************************************************************************************/
+// BowlMonitor - Checks weight of bowl.. if bowl is above a certain weight we assume that it has food in it and return true, else return false
+// actual hardware setup commented out as we do not have it connected
+/**********************************************************************************************************************************************/
+function BowlMonitor(){
+/*
+	var bowlCheck = new mraa.Aio(0);
+	var bowlValue = bowlCheck.read();
+	console.log('value of bowl weight is '+ bowlValue);
+	if (bowlValue > 22){
+		return true;
+	}
+*/
+	return false;
+}
+/***********************************************************************************************************************************************/
+// clock- updates the LCD with the value of myTime.
 /***********************************************************************************************************************************************/
 function clock(myTime)
 {
     theLCD.setCursor(0,0);
     theLCD.write(myTime);
 }
-/*************************************************/
-
+/***********************************************************************************************************************************************/
 // feedTheAnimal runs through the feeding process, enables motor keeps it on for amount * 1 second , then turns motor off.
 /***********************************************************************************************************************************************/
 function feedTheAnimal(amount) // Drives the motor, amount of time is based off of amount of food to be moved.  Will need to measure half cup.
 {
     var date2 = new Date(); // setup date
-    var mumraa = require("mraa"); // require mraa
-    var motor = new mumraa.Pwm(5);
     motor.enable(true);  // enables PWM for motor
     motor.period_ms(20); // 20 ms period
     motor.write(0.085); // sets the motor to go clockwise (0.085 * 20000 = 1700 usec)  set to .065 for counterclockwise and .075 for stop.
@@ -88,6 +148,7 @@ function feedTheAnimal(amount) // Drives the motor, amount of time is based off 
         motor.enable(false); // turn off the system
         console.log("Stopping feeding the dog on " + date2.toLocaleTimeString() ); // debug to make sure that the feeding is going the right amount of time.
 		sendMessage("Fed the dog at " + date2.toLocaleTimeString());
+		return;
     };
     
     setTimeout(turnMotorOff, 1000 * amount);
@@ -122,7 +183,6 @@ function  sendMessage(textToSend)
                 console.log("Message wasn't sent...");
 			}
 	});
-    
 };
 /******************************************************************************/
 
@@ -152,7 +212,7 @@ function periodicActivity()
     }
         
     var feedNowValue =  feedNowButton.read(); //Checking if feed now button has been press
-    if (feedNowValue == 1){
+    if (feedNowValue == 1){ // might be able to go boolean
         console.log("feeding the dog due to feed now button");
         //sendMessage("feed now has been pushed at " + myTime);  // tells the message server to send the feeding message.
         feed.feedTheDog(2); // goes through feeding process
