@@ -32,7 +32,7 @@ var LCD = require("jsupm_i2clcd");
 var mraa = require('mraa'); //require mraa
 var fs = require('fs'); // required to interact with file system on Edison
 var config;
-date = new Date();  //will this work globally
+var date = new Date();  //will this work globally
 
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the console
 
@@ -64,27 +64,30 @@ feedNowButton.dir(mraa.DIR_IN);
 // attempt to parse config file, and put the info into the config object
 try {
     config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+	console.log('Feeding ' + config.feedingSchedule[0].id + ' is scheduled for ' + config.feedingSchedule[0].time);
+	console.log('Feeding ' + config.feedingSchedule[1].id + ' is scheduled for ' + config.feedingSchedule[1].time);
+	console.log('Feeding ' + config.feedingSchedule[2].id + ' is scheduled for '+ config.feedingSchedule[2].time);
 } catch (e) {
     console.log(e);
 }
 // whenever there is a change in config.json it will re-parse it into the config object
-fswatch(__dirname + '/config.json', function(event, filename) {
+fs.watch(__dirname + '/config.json', function(event, filename) {
 	console.log('change in config.json detected, reparsing file');
 	try {
         config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
-		console.log('parsing completed');
-		console.log('Feeding ' + config.feedingSchedule[0].id + ' is scheduled for 'config.feedingSchedule[0].time);
-		console.log('Feeding ' + config.feedingSchedule[1].id + ' is scheduled for 'config.feedingSchedule[1].time);
-		console.log('Feeding ' + config.feedingSchedule[2].id + ' is scheduled for 'config.feedingSchedule[2].time);
+		console.log('Feeding ' + config.feedingSchedule[0].id + ' is scheduled for ' + config.feedingSchedule[0].time);
+		console.log('Feeding ' + config.feedingSchedule[1].id + ' is scheduled for ' + config.feedingSchedule[1].time);
+		console.log('Feeding ' + config.feedingSchedule[2].id + ' is scheduled for '+ config.feedingSchedule[2].time);
+        console.log('reparsing completed');
     } catch (e) {
         console.log('parsing failed');
 		console.log(e);
     }
-}
+});
 
 theLCD.setColor(200,100,0);      // sets LCD color
-setInterval (function({clock(date.toLocaleTimeString);},1000); //updates the LCD every second
-setInterval (function({periodicActivity();},1000); //calls the periodicActivity function every second
+setInterval(function(){clocky();},1000); //updates the LCD every second
+setInterval(function(){periodicActivity();},1000); //calls the periodicActivity function every second
 
 /***********************************************************************************************************************************************/
 // hopperMonitor - returns status of the hopper ... returns 0 if empty, 1 if low, 2 if partially filled, 3 if full.  Note digital checks are
@@ -128,10 +131,12 @@ function BowlMonitor(){
 /***********************************************************************************************************************************************/
 // clock- updates the LCD with the value of myTime.
 /***********************************************************************************************************************************************/
-function clock(myTime)
+function clocky()
 {
+    var myTime = new Date();
+    var myTimeString = myTime.toLocaleTimeString();
     theLCD.setCursor(0,0);
-    theLCD.write(myTime);
+    theLCD.write(myTimeString);
 }
 /***********************************************************************************************************************************************/
 // feedTheAnimal runs through the feeding process, enables motor keeps it on for amount * 1 second , then turns motor off.
@@ -153,7 +158,7 @@ function feedTheAnimal(amount) // Drives the motor, amount of time is based off 
     
     setTimeout(turnMotorOff, 1000 * amount);
     
-};
+}
 
 
 // sendMessage sends a text message via twilio API to defined cell phone.  Message contents are determined by messID integer.
@@ -183,7 +188,7 @@ function  sendMessage(textToSend)
                 console.log("Message wasn't sent...");
 			}
 	});
-};
+}
 /******************************************************************************/
 
 
@@ -193,22 +198,22 @@ function periodicActivity()
 {
     var date = new Date();
     var currentTime = date.toLocaleTimeString();
-    try {
+ /*   try {
         config = JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'));
     } catch (e) {
         console.log(e);
     }
-
+*/
     // Checks against feeding schedule.. if it is time to eat, the feeding process is started. 
-    if (mytime == config.feedingSchedule[0].time && config.feedingSchedule[0].enabled){
+    if (currentTime == config.feedingSchedule[0].time && config.feedingSchedule[0].enabled){
         console.log("feeding the dog due to schedule " + config.feedingSchedule[0].id);
-        feed.feedTheDog(config.feedingSchedule[0].amount);
-    } else if (mytime == config.feedingSchedule[1].time && config.feedingSchedule[1].enabled){
+        feedTheAnimal(config.feedingSchedule[0].amount);
+    } else if (currentTime == config.feedingSchedule[1].time && config.feedingSchedule[1].enabled){
         console.log("feeding the dog due to schedule " + config.feedingSchedule[1].id);
-        feed.feedTheDog(config.feedingSchedule[1].amount);
-    } else if (mytime == config.feedingSchedule[2].time && config.feedingSchedule[2].enabled){
+        feedTheAnimal(config.feedingSchedule[1].amount);
+    } else if (currentTime == config.feedingSchedule[2].time && config.feedingSchedule[2].enabled){
         console.log("feeding the dog due to schedule " + config.feedingSchedule[2].id);
-        feed.feedTheDog(config.feedingSchedule[2].amount);
+        feedTheAnimal(config.feedingSchedule[2].amount);
     }
         
     var feedNowValue =  feedNowButton.read(); //Checking if feed now button has been press
