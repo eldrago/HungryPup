@@ -219,8 +219,8 @@ function periodicActivity()
     var feedNowValue =  feedNowButton.read(); //Checking if feed now button has been press
     if (feedNowValue == 1){ // might be able to go boolean
         console.log("feeding the dog due to feed now button");
-        //sendMessage("feed now has been pushed at " + myTime);  // tells the message server to send the feeding message.
-        feed.feedTheDog(2); // goes through feeding process
+        sendMessage("feed now has been pushed at " + currentTime);  // tells the message server to send the feeding message.
+        feedTheDog(2); // goes through feeding process
     }
 }
 /*********************************************************/
