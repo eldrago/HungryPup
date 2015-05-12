@@ -6,9 +6,6 @@ It is the core software for our automated connected pet feeder senior project...
 Important App Files
 ---------------------------
 * main.js
-* feed.js 
-* messager.js
-* buzzer.js
 * package.json
 * icon.png
 * README.md
