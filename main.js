@@ -71,7 +71,7 @@ try {
     console.log(e);
 }
 // whenever there is a change in config.json it will re-parse it into the config object
-fs.watch(__dirname + '/config.json', function(event, filename) {
+fs.watchFile(__dirname + '/config.json', function(event, filename) {
 	console.log('change in config.json detected, reparsing file');
 	try {
         config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
