@@ -31,6 +31,7 @@
 var LCD = require("jsupm_i2clcd");
 var mraa = require('mraa'); //require mraa
 var fs = require('fs'); // required to interact with file system on Edison
+var webserver = require('./webserver.js');
 var config;
 var date = new Date();  //will this work globally
 
@@ -67,12 +68,14 @@ try {
 	console.log('Feeding ' + config.feedingSchedule[0].id + ' is scheduled for ' + config.feedingSchedule[0].time);
 	console.log('Feeding ' + config.feedingSchedule[1].id + ' is scheduled for ' + config.feedingSchedule[1].time);
 	console.log('Feeding ' + config.feedingSchedule[2].id + ' is scheduled for '+ config.feedingSchedule[2].time);
+    console.log(config.smsnumber);
 } catch (e) {
     console.log(e);
 }
 // whenever there is a change in config.json it will re-parse it into the config object
 fs.watchFile(__dirname + '/config.json', function(event, filename) {
 	console.log('change in config.json detected, reparsing file');
+    setTimeout(function(){
 	try {
         config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
 		console.log('Feeding ' + config.feedingSchedule[0].id + ' is scheduled for ' + config.feedingSchedule[0].time);
@@ -82,7 +85,7 @@ fs.watchFile(__dirname + '/config.json', function(event, filename) {
     } catch (e) {
         console.log('parsing failed');
 		console.log(e);
-    }
+    }},2000);
 });
 
 theLCD.setColor(200,100,0);      // sets LCD color
@@ -178,7 +181,7 @@ function  sendMessage(textToSend)
     */
     
     client.messages.create({
-    to: "5037083261" , //config.user.smsnum,
+    to: config.smsnum , 
     from: "+19713402146",
     body: textToSend,
     }, function(error, message){  //if there was a problem it states the error 
@@ -198,12 +201,7 @@ function periodicActivity()
 {
     var date = new Date();
     var currentTime = date.toLocaleTimeString();
- /*   try {
-        config = JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf8'));
-    } catch (e) {
-        console.log(e);
-    }
-*/
+
     // Checks against feeding schedule.. if it is time to eat, the feeding process is started. 
     if (currentTime == config.feedingSchedule[0].time && config.feedingSchedule[0].enabled){
         console.log("feeding the dog due to schedule " + config.feedingSchedule[0].id);
@@ -220,7 +218,7 @@ function periodicActivity()
     if (feedNowValue == 1){ // might be able to go boolean
         console.log("feeding the dog due to feed now button");
         sendMessage("feed now has been pushed at " + currentTime);  // tells the message server to send the feeding message.
-        feedTheDog(2); // goes through feeding process
+        feedTheAnimal(2); // goes through feeding process
     }
 }
 /*********************************************************/

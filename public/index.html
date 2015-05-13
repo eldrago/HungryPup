@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pet Feeder Setup</title>
+    <link rel="stylesheet" type="text/css" href="main.css" media="screen"/>
+    <script type="text/javascript">
+        var LIST_SEPARATOR = "-------------------------";
+
+        function saveFields() {
+            document.cookie = '{"name": "' + document.getElementById("name").value + '",' +
+                    '"ssid": "' + document.getElementById("ssid").value + '",' +
+                    '"protocol": "' + document.getElementById("protocol").value + '",' +
+                    '"netuser": "' + document.getElementById("netuser").value + '"' +
+                    '}';
+        }
+    </script>
+    <noscript>
+        Please enable Javascript. It is needed for this page to work correctly. Thank you.
+    </noscript>
+</head>
+<body>
+<a href="/" style="text-decoration: none"><h1>Hungry Pup</h1></a>
+<div class="menu">
+    <table>
+        <tr>
+            <td class="menuitem" style="background-color: lightgrey">
+                <a href="/" style="text-decoration: none; color: #0062a8">Feeding</a>
+            </td>
+            <td class="menuitem">
+                <a href="configure.html" style="text-decoration: none; color:black">Configure</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- errors will go here -->
+<form id="setup_form" name="setup_form" method="POST" action="submitForm" onsubmit="saveFields()">
+    <div id="name_section" class="section">
+    <table class="infoline">
+        <tr>
+            <td class="infoline_column infoline_left">Hostname:</td>
+            <td class="infoline_column infoline_right">params_hostname</td>
+        </tr>
+    </table>
+    <table class="infoline">
+        <tr>
+            <td class="infoline_column infoline_left">IP Address:</td>
+            <td class="infoline_column infoline_right">params_ip</td>
+        </tr>
+    </table>
+        
+        <div class="header">Meal Times</div>
+        <table class="content">
+            <tr>
+                <td class="left">
+                    Times of day to feed pet, and how much food to feed pet.
+                </td>
+	    </tr>
+            <tr>
+                <td class="left"><label for="name">Meal 1:</label></td>
+                <td class="middle"><input type="time" id="mealtime1" name="mealtime1"><br>
+                <select id="mealAmount1" name="mealAmount1" class="selector">
+                        <option value=".5">1/2 Cup</option>
+                        <option value="1">1 Cup</option>
+                        <option value="1.5">1.5 Cups</option>
+                        <option value="2">2 Cups</option>
+                 </select></td>
+            </tr>
+            <tr>
+                <td class="left"><label for="name">Meal 2:</label></td>
+                <td class="middle"><input type="time" id="mealtime2" name="mealtime2"><br>
+                <select id="mealAmount2" name="mealAmount2" class="selector">
+                        <option value=".5">1/2 Cup</option>
+                        <option value="1">1 Cup</option>
+                        <option value="1.5">1.5 Cups</option>
+                        <option value="2">2 Cups</option>
+                 </select></td>
+
+            </tr>
+            <tr>
+                <td class="left"><label for="name">Meal 3:</label></td>
+                <td class="middle"><input type="time" id="mealtime3" name="mealtime3"><br>
+                <select id="mealAmount3" name="mealAmount3" class="selector">
+                        <option value=".5">1/2 Cup</option>
+                        <option value="1">1 Cup</option>
+                        <option value="1.5">1.5 Cups</option>
+                        <option value="2">2 Cups</option>
+                 </select></td>
+
+            </tr>
+        </table>
+    </div>
+  
+    <div class="submit_section">
+        <input class="submit_button" type="submit" value="Submit">
+    </div>
+</form>
+</body>
+</html>
