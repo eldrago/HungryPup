@@ -125,6 +125,13 @@ function setWiFi(params) {
   return {failure: errmsg};
 }
 
+
+function submitFormFeeding(params, res, req) {
+
+}
+
+/********************************************************/
+
 function submitForm(params, res, req) {
   var calls = [setPass, setHost, setWiFi];
   var result = null, commands = ['sleep 5'];
@@ -187,6 +194,8 @@ function submitForm(params, res, req) {
   });
 }
 
+/***************************************************************/
+
 function handlePostRequest(req, res) {
   if (urlobj.pathname === '/submitForm') {
     var payload = "";
@@ -195,13 +204,14 @@ function handlePostRequest(req, res) {
     });
     req.on('end', function () {
       var params = qs.parse(payload);
-      submitForm(params, res, req);
+      submitFormFeeding(params, res, req);
     });
   } else {
     pageNotFound(res);
   }
 }
 
+/***************************************************************/
 // main request handler. GET requests are handled here.
 // POST requests are handled in handlePostRequest()
 function requestHandler(req, res) {
@@ -244,6 +254,15 @@ function requestHandler(req, res) {
 
           res_str = res_str.replace(/params_ip/g, myipaddr);
           res_str = res_str.replace(/params_hostname/g, myhostname);
+          res_str = res_str.replace(/time1/g, config.feedingSchedule[0].time);
+          res_str = res_str.replace(/amount1/g, config.feedingSchedule[0].amount);
+          res_str = res_str.replace(/enabled1/g, config.feedingSchedule[0].enabled);
+          res_str = res_str.replace(/time2/g, config.feedingSchedule[1].time);
+          res_str = res_str.replace(/amount2/g, config.feedingSchedule[1].amount);
+          res_str = res_str.replace(/enabled2/g, config.feedingSchedule[1].enabled);
+          res_str = res_str.replace(/time3/g, config.feedingSchedule[2].time);
+          res_str = res_str.replace(/amount3/g, config.feedingSchedule[2].amount);
+          res_str = res_str.replace(/enabled3/g, config.feedingSchedule[2].enabled);
           res.end(res_str);
         });
       });
@@ -269,4 +288,24 @@ function requestHandler(req, res) {
   }
 }
 
+/****************************************************************************/
+var config;
+
+try 
+{
+    config = JSON.parse(fs.readFileSync(__dirname + '/public/config.json'));
+	} catch (e) {
+    console.log(e);
+}
+// whenever there is a change in config.json it will re-parse it into the config object
+fs.watchFile(__dirname + '/public/config.json', function(event, filename) {
+	console.log('change in config.json detected, reparsing file');
+    setTimeout(function(){
+	try {
+        console.log('reparsing completed');
+    } catch (e) {
+        console.log('parsing failed');
+		console.log(e);
+    }},2000);
+});
 http.createServer(requestHandler).listen(81);

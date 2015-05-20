@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pet Feeder Setup</title>
+    <link rel="stylesheet" type="text/css" href="main.css" media="screen"/>
+    <script type="text/javascript">
+        var LIST_SEPARATOR = "-------------------------";
+
+        function saveFields() {
+            document.cookie = '{"feedingSchedule": {"id":"1", time:"' + document.getElementById("time1").value + '",' +
+                    '"amount": "' + document.getElementById("amount1").value + '",' +
+                    '"enabled": "' + document.getElementById("enabled1").value + '},' +
+                    '{"id":"2", time:"' + document.getElementById("time2").value + '",' +
+                    '"amount": "' + document.getElementById("amount2").value + '",' +
+                    '"enabled": "' + document.getElementById("enabled2").value + '},' +
+                    '{"id":"3", time:"' + document.getElementById("time3").value + '",' +
+                    '"amount": "' + document.getElementById("amount3").value + '",' +
+                    '"enabled": "' + document.getElementById("enabled3").value + '}],' +
+                    '"smsnumber":"'+ document.getElementById("sms").value + '"}'; 
+        }
+    </script>
+    <noscript>
+        Please enable Javascript. It is needed for this page to work correctly. Thank you.
+    </noscript>
+</head>
+<body>
+<a href="/" style="text-decoration: none"><h1>Hungry Pup</h1></a>
+<div class="menu">
+    <table>
+        <tr>
+            <td class="menuitem">
+                <a href="index.html" style="text-decoration: none; color:black">Home</a>
+            </td>        
+            <td class="menuitem" style="background-color: lightgrey">
+                <a href="SetFeeding.html" style="text-decoration: none; color: #0062a8">Feed</a>
+            </td>
+            <td class="menuitem">
+                <a href="configure.html" style="text-decoration: none; color:black">Wifi</a>
+            </td>
+            <td class="menuitem">
+                <a href="Documentation.html" style="text-decoration: none; color:black">Documentation</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- errors will go here -->
+<form id="setup_form" name="setup_form" method="POST" action="submitForm" onsubmit="saveFields()">
+    <div id="name_section" class="section">
+
+    <div class="header">Meal Times</div>
+    <table class="content">
+    <tr>
+        <td class="left">
+            Times of day to feed pet, and how much food to feed pet.
+        </td>
+    </tr>
+    <tr>
+        <td class="left"><label for="name">Meal 1:</label></td>
+        <td class="middle"><input type="time" id="time1" name="time1"><br>
+            <select id="Amount1" name="Amount1" class="selector">
+                <option value=".5">1/2 Cup</option>
+                <option value="1">1 Cup</option>
+                <option value="1.5">1.5 Cups</option>
+                <option value="2">2 Cups</option>
+             </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="left"><label for="name">Meal 2:</label></td>
+        <td class="middle"><input type="time" id="time2" name="time2"><br>
+            <select id="Amount2" name="Amount2" class="selector">
+                <option value=".5">1/2 Cup</option>
+                <option value="1">1 Cup</option>
+                <option value="1.5">1.5 Cups</option>
+                <option value="2">2 Cups</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="left"><label for="name">Meal 3:</label></td>
+        <td class="middle"><input type="time" id="mealtime3" name="mealtime3"><br>
+            <select id="mealAmount3" name="mealAmount3" class="selector">
+                <option value=".5">1/2 Cup</option>
+                <option value="1">1 Cup</option>
+                <option value="1.5">1.5 Cups</option>
+                <option value="2">2 Cups</option>
+             </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="left"><label for="name">SMS Number:</label></td>
+        <td class="middle"><input type="text" id="sms" name="sms">
+    </tr>
+        
+        </table>
+    </div>
+  
+    <div class="submit_section">
+        <input class="submit_button" type="submit" value="Submit">
+    </div>
+</form>
+</body>
+</html>

@@ -64,7 +64,7 @@ feedNowButton.dir(mraa.DIR_IN);
 
 // attempt to parse config file, and put the info into the config object
 try {
-    config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+    config = JSON.parse(fs.readFileSync(__dirname + '/public/config.json'));
 	console.log('Feeding ' + config.feedingSchedule[0].id + ' is scheduled for ' + config.feedingSchedule[0].time);
 	console.log('Feeding ' + config.feedingSchedule[1].id + ' is scheduled for ' + config.feedingSchedule[1].time);
 	console.log('Feeding ' + config.feedingSchedule[2].id + ' is scheduled for '+ config.feedingSchedule[2].time);
@@ -73,7 +73,7 @@ try {
     console.log(e);
 }
 // whenever there is a change in config.json it will re-parse it into the config object
-fs.watchFile(__dirname + '/config.json', function(event, filename) {
+fs.watchFile(__dirname + '/public/config.json', function(event, filename) {
 	console.log('change in config.json detected, reparsing file');
     setTimeout(function(){
 	try {
@@ -179,9 +179,9 @@ function  sendMessage(textToSend)
         console.log(e);
     }
     */
-    
+    console.log(config.smsnumber);
     client.messages.create({
-    to: config.smsnum , 
+    to: config.smsnumber , 
     from: "+19713402146",
     body: textToSend,
     }, function(error, message){  //if there was a problem it states the error 
