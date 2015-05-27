@@ -124,10 +124,22 @@ function setWiFi(params) {
   }
   return {failure: errmsg};
 }
-
+/********************************************************/
 
 function submitFormFeeding(params, res, req) {
-
+    console.log(params);
+    var newconfig = '{"feedingSchedule": {"id":"1", time:"' + params.time1 + '",' + '"amount": "' + params.amount1 + '",' + '"enabled": "' + params.enabled1 + '"},' +
+                    '{"id":"2", time:"' + params.time2 + '",' + '"amount": "' + params.amount2 + '",' + '"enabled": "' + params.enabled2 + '"},' +
+                    '{"id":"3", time:"' + params.time3 + '",' + '"amount": "' + params.amount3 + '",' + '"enabled": "' + params.enabled3 + '"}],' +
+                    '"smsnumber":"'+ params.sms + '"}'; 
+    console.log(newconfig); 
+    fs.writeFile('/node_app_slot/public/config.json', newconfig , function (err) {
+        if (err) return console.log(err);
+        console.log("done");
+    } );
+    
+    res_str = fs.readFileSync(site + '/index.html', {encoding: 'utf8'});
+    res.end(res_str);
 }
 
 /********************************************************/
@@ -200,10 +212,12 @@ function handlePostRequest(req, res) {
   if (urlobj.pathname === '/submitForm') {
     var payload = "";
     req.on('data', function (data) {
-      payload += data;
+        payload += data;
     });
+    console.log("parse 1" + payload);
     req.on('end', function () {
       var params = qs.parse(payload);
+      // edit so that it can tell between wifi and feeding submit.
       submitFormFeeding(params, res, req);
     });
   } else {

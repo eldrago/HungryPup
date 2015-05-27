@@ -3,11 +3,13 @@
 <head>
     <title>Pet Feeder Setup</title>
     <link rel="stylesheet" type="text/css" href="main.css" media="screen"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script type="text/javascript">
         var LIST_SEPARATOR = "-------------------------";
 
-        function saveFields() {
-            document.cookie = '{"feedingSchedule": {"id":"1", time:"' + document.getElementById("time1").value + '",' +
+        function savemyFields() {
+            console.log("saving stuff");
+  /*          document.cookie = '{"feedingSchedule": {"id":"1", time:"' + document.getElementById("time1").value + '",' +
                     '"amount": "' + document.getElementById("amount1").value + '",' +
                     '"enabled": "' + document.getElementById("enabled1").value + '},' +
                     '{"id":"2", time:"' + document.getElementById("time2").value + '",' +
@@ -16,8 +18,29 @@
                     '{"id":"3", time:"' + document.getElementById("time3").value + '",' +
                     '"amount": "' + document.getElementById("amount3").value + '",' +
                     '"enabled": "' + document.getElementById("enabled3").value + '}],' +
-                    '"smsnumber":"'+ document.getElementById("sms").value + '"}'; 
+                    '"smsnumber":"'+ document.getElementById("sms").value + '"}';  */
         }
+        
+        function AJAX_JSON_Req( url )
+        {
+            var AJAX_req = new XMLHttpRequest();
+            AJAX_req.open( "GET", url, true );
+            AJAX_req.setRequestHeader("Content-type", "application/json");
+
+            AJAX_req.onreadystatechange = function()
+            {
+                if( AJAX_req.readyState == 4 && AJAX_req.status == 200 )
+                {
+                    var response = JSON.parse( AJAX_req.responseText );
+                    document.write( response.name );
+                }
+            }
+            AJAX_req.send();
+        }
+ 
+    AJAX_JSON_Req( '/public/config.json' );
+    var test = JSON.parse ( AJAC_req.responseText);
+    
     </script>
     <noscript>
         Please enable Javascript. It is needed for this page to work correctly. Thank you.
@@ -44,7 +67,7 @@
     </table>
 </div>
 <!-- errors will go here -->
-<form id="setup_form" name="setup_form" method="POST" action="submitForm" onsubmit="saveFields()">
+<form id="setup_form" name="setup_form" method="POST" action="submitForm" onsubmit="savemyFields()">
     <div id="name_section" class="section">
 
     <div class="header">Meal Times</div>
@@ -57,35 +80,48 @@
     <tr>
         <td class="left"><label for="name">Meal 1:</label></td>
         <td class="middle"><input type="time" id="time1" name="time1"><br>
-            <select id="Amount1" name="Amount1" class="selector">
+            <select id="amount1" name="amount1" class="selector">
                 <option value=".5">1/2 Cup</option>
                 <option value="1">1 Cup</option>
                 <option value="1.5">1.5 Cups</option>
                 <option value="2">2 Cups</option>
              </select>
         </td>
+        <td class="right"><select id="enabled1" name="enabled1" class="selector" value=true>
+            <option value=true>Enabled</option>
+            <option value=false>Disabled</option>
+        </select></td>
     </tr>
     <tr>
         <td class="left"><label for="name">Meal 2:</label></td>
         <td class="middle"><input type="time" id="time2" name="time2"><br>
-            <select id="Amount2" name="Amount2" class="selector">
+            <select id="amount2" name="amount2" class="selector">
                 <option value=".5">1/2 Cup</option>
                 <option value="1">1 Cup</option>
                 <option value="1.5">1.5 Cups</option>
                 <option value="2">2 Cups</option>
             </select>
         </td>
+        <td class="right"><select id="enabled2" name="enabled2" class="selector" value=true>
+            <option value=true>Enabled</option>
+            <option value=false>Disabled</option>
+        </select></td>
+            
     </tr>
     <tr>
         <td class="left"><label for="name">Meal 3:</label></td>
-        <td class="middle"><input type="time" id="mealtime3" name="mealtime3"><br>
-            <select id="mealAmount3" name="mealAmount3" class="selector">
+        <td class="middle"><input type="time" id="time3" name="time3"><br>
+            <select id="amount3" name="amount3" class="selector">
                 <option value=".5">1/2 Cup</option>
                 <option value="1">1 Cup</option>
                 <option value="1.5">1.5 Cups</option>
                 <option value="2">2 Cups</option>
              </select>
         </td>
+        <td class="right"><select id="enabled3" name="enabled3" class="selector" value=true>
+            <option value=true>Enabled</option>
+            <option value=false>Disabled</option>
+        </select></td>
     </tr>
     <tr>
         <td class="left"><label for="name">SMS Number:</label></td>

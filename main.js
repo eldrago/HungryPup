@@ -77,7 +77,7 @@ fs.watchFile(__dirname + '/public/config.json', function(event, filename) {
 	console.log('change in config.json detected, reparsing file');
     setTimeout(function(){
 	try {
-        config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+        config = JSON.parse(fs.readFileSync(__dirname + '/public/config.json'));
 		console.log('Feeding ' + config.feedingSchedule[0].id + ' is scheduled for ' + config.feedingSchedule[0].time);
 		console.log('Feeding ' + config.feedingSchedule[1].id + ' is scheduled for ' + config.feedingSchedule[1].time);
 		console.log('Feeding ' + config.feedingSchedule[2].id + ' is scheduled for '+ config.feedingSchedule[2].time);
