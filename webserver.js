@@ -127,18 +127,19 @@ function setWiFi(params) {
 /********************************************************/
 
 function submitFormFeeding(params, res, req) {
-    console.log(params);
-    var newconfig = '{"feedingSchedule": {"id":"1", time:"' + params.time1 + '",' + '"amount": "' + params.amount1 + '",' + '"enabled": "' + params.enabled1 + '"},' +
-                    '{"id":"2", time:"' + params.time2 + '",' + '"amount": "' + params.amount2 + '",' + '"enabled": "' + params.enabled2 + '"},' +
-                    '{"id":"3", time:"' + params.time3 + '",' + '"amount": "' + params.amount3 + '",' + '"enabled": "' + params.enabled3 + '"}],' +
-                    '"smsnumber":"'+ params.sms + '"}'; 
+    console.log(params.sms);
+    var newconfig = '{"feedingSchedule": [{"id":"1", "time":"' + params.time1 + '","amount": "' + params.amount1 + '",' + '"enabled": "' + params.enabled1 + '"},' +
+                    '{"id":"2", "time":"' + params.time2 + '","amount": "' + params.amount2 + '",' + '"enabled": "' + params.enabled2 + '"},' +
+                    '{"id":"3", "time":"' + params.time3 + '","amount": "' + params.amount3 + '",' + '"enabled": "' + params.enabled3 + '"}],' +
+                    '"smsnumber":"'+ params.smsAC + params.smsf3 + params.smsl4 + '"}'; 
     console.log(newconfig); 
+    
     fs.writeFile('/node_app_slot/public/config.json', newconfig , function (err) {
         if (err) return console.log(err);
         console.log("done");
     } );
     
-    res_str = fs.readFileSync(site + '/index.html', {encoding: 'utf8'});
+    res_str = fs.readFileSync(site + '/FeedingSet.html', {encoding: 'utf8'});
     res.end(res_str);
 }
 
@@ -209,7 +210,7 @@ function submitForm(params, res, req) {
 /***************************************************************/
 
 function handlePostRequest(req, res) {
-  if (urlobj.pathname === '/submitForm') {
+  if (urlobj.pathname === '/submitConfig' || urlobj.pathname=== '/submitForm') {
     var payload = "";
     req.on('data', function (data) {
         payload += data;
@@ -217,8 +218,14 @@ function handlePostRequest(req, res) {
     console.log("parse 1" + payload);
     req.on('end', function () {
       var params = qs.parse(payload);
+      console.log (payload);
       // edit so that it can tell between wifi and feeding submit.
-      submitFormFeeding(params, res, req);
+      if (urlobj.pathname === '/submitConfig') {
+        submitFormFeeding(params, res, req);
+      } else {
+          submitForm(params,res,req);
+      }
+      
     });
   } else {
     pageNotFound(res);
@@ -240,6 +247,14 @@ function requestHandler(req, res) {
 
   // GET request
   if (!urlobj.pathname || urlobj.pathname === '/' || urlobj.pathname === '/index.html') {
+      var config;
+
+      try 
+      {
+            config = JSON.parse(fs.readFileSync(__dirname + '/public/config.json'));
+	  } catch (e) {
+        console.log(e);
+      }
       var res_str = fs.readFileSync(site + '/index.html', {encoding: 'utf8'});
       var myhostname, myipaddr;
       var cmd = 'configure_edison --showWiFiIP';
@@ -303,23 +318,5 @@ function requestHandler(req, res) {
 }
 
 /****************************************************************************/
-var config;
 
-try 
-{
-    config = JSON.parse(fs.readFileSync(__dirname + '/public/config.json'));
-	} catch (e) {
-    console.log(e);
-}
-// whenever there is a change in config.json it will re-parse it into the config object
-fs.watchFile(__dirname + '/public/config.json', function(event, filename) {
-	console.log('change in config.json detected, reparsing file');
-    setTimeout(function(){
-	try {
-        console.log('reparsing completed');
-    } catch (e) {
-        console.log('parsing failed');
-		console.log(e);
-    }},2000);
-});
 http.createServer(requestHandler).listen(81);
