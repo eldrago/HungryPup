@@ -21,7 +21,7 @@
                 alert("not a valid phone #");  
                 event.returnValue=false;
                 return false;  
-            }  
+            }
     }
     
     function selectChange(elementID, defaultVal) {
@@ -42,7 +42,6 @@
         document.getElementById("smsAC").defaultValue=json.smsnumber.substring(0,3);
         document.getElementById("smsf3").defaultValue=json.smsnumber.substring(3,6);
         document.getElementById("smsl4").defaultValue=json.smsnumber.substring(6,10);
-        //document.getElementById("sms").defaultValue = json.smsnumber;
         document.getElementById("time1").defaultValue = json.feedingSchedule[0].time;
         document.getElementById("time2").defaultValue = json.feedingSchedule[1].time;
         document.getElementById("time3").defaultValue = json.feedingSchedule[2].time;
@@ -64,7 +63,7 @@
     
     
 <body onload="poop();">
-<a href="/" style="text-decoration: none"><h1>Set Feed Me Feeding Schedule</h1></a>
+<a href="/" style="text-decoration: none"><h1>HungryPup Feeding Schedule</h1></a>
 <div class="menu">
     <table>
         <tr>
@@ -73,9 +72,6 @@
             </td>        
             <td class="menuitem" style="background-color: lightgrey">
                 <a href="SetFeeding.html" style="text-decoration: none; color: #0062a8">Feed</a>
-            </td>
-            <td class="menuitem">
-                <a href="configure.html" style="text-decoration: none; color:black">Wifi</a>
             </td>
             <td class="menuitem">
                 <a href="Documentation.html" style="text-decoration: none; color:black">Documentation</a>
@@ -101,10 +97,10 @@
         <td class="left"><label for="name">Meal 1:</label></td>
         <td class="middle"><input type="time" id="time1" name="time1" required><br>
             <select id="amount1" name="amount1" class="selector">
-                <option value=".5">1/2 Cup</option>
-                <option value="1">1 Cup</option>
-                <option value="1.5">1.5 Cups</option>
-                <option value="2">2 Cups</option>
+                <option value="1">1/2 Cup</option>
+                <option value="2">1 Cup</option>
+                <option value="3">1.5 Cups</option>
+                <option value="4">2 Cups</option>
              </select>
         </td>
         <td class="right"><select id="enabled1" name="enabled1" class="selector" value=true>
@@ -116,10 +112,10 @@
         <td class="left"><label for="name">Meal 2:</label></td>
         <td class="middle"><input type="time" id="time2" name="time2" required><br>
             <select id="amount2" name="amount2" class="selector">
-                <option value=".5">1/2 Cup</option>
-                <option value="1">1 Cup</option>
-                <option value="1.5">1.5 Cups</option>
-                <option value="2">2 Cups</option>
+                <option value="1">1/2 Cup</option>
+                <option value="2">1 Cup</option>
+                <option value="3">1.5 Cups</option>
+                <option value="4">2 Cups</option>
             </select>
         </td>
         <td class="right"><select id="enabled2" name="enabled2" class="selector" value=false>
@@ -132,10 +128,10 @@
         <td class="left"><label for="name"><bold>Meal 3</bold></label><br>
         <td class="middle"><input type="time" id="time3" name="time3" required><br>
             <select id="amount3" name="amount3" class="selector">
-            <option value=".5">1/2 Cup</option>
-            <option value="1">1 Cup</option>
-            <option value="1.5">1.5 Cups</option>
-            <option value="2">2 Cups</option>
+            <option value="1">1/2 Cup</option>
+            <option value="2">1 Cup</option>
+            <option value="3">1.5 Cups</option>
+            <option value="4">2 Cups</option>
         </select></td>
         
         <td class="right"><select id="enabled3" name="enabled3" class="selector">

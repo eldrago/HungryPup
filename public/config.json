@@ -2,9 +2,9 @@
 
 {
     "feedingSchedule": [
-		{"id":"1", "time":"18:06:00", "amount": 2, "enabled": true},
-		{"id":"2", "time":"18:46:00", "amount": 1, "enabled": true},
-		{"id":"3", "time":"23:10:00", "amount": 4, "enabled": true}],
+		{"id":"1", "time":"11:28:00", "amount": 4, "enabled": true},
+		{"id":"2", "time":"01:10:00", "amount": 2, "enabled": true},
+		{"id":"3", "time":"17:06:00", "amount": 2, "enabled": true}],
     "smsnumber":"5037083261"
 }
 	

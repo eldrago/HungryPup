@@ -128,6 +128,15 @@ function setWiFi(params) {
 
 function submitFormFeeding(params, res, req) {
     console.log(params.sms);
+    if (!params.time1.match(/\d\d:\d\d:\d\d/)){
+        params.time1=params.time1+":00";
+    }
+    if (!params.time2.match(/\d\d:\d\d:\d\d/)){
+        params.time2=params.time2+":00";
+    }
+    if (!params.time3.match(/\d\d:\d\d:\d\d/)){
+        params.time3=params.time3+":00";    
+    }
     var newconfig = '{"feedingSchedule": [{"id":"1", "time":"' + params.time1 + '","amount": "' + params.amount1 + '",' + '"enabled": "' + params.enabled1 + '"},' +
                     '{"id":"2", "time":"' + params.time2 + '","amount": "' + params.amount2 + '",' + '"enabled": "' + params.enabled2 + '"},' +
                     '{"id":"3", "time":"' + params.time3 + '","amount": "' + params.amount3 + '",' + '"enabled": "' + params.enabled3 + '"}],' +
@@ -255,6 +264,13 @@ function requestHandler(req, res) {
 	  } catch (e) {
         console.log(e);
       }
+            try 
+      {
+            blocking = JSON.parse(fs.readFileSync(__dirname + '/public/blocking.json'));
+	  } catch (e) {
+        console.log(e);
+      }
+      
       var res_str = fs.readFileSync(site + '/index.html', {encoding: 'utf8'});
       var myhostname, myipaddr;
       var cmd = 'configure_edison --showWiFiIP';
@@ -280,7 +296,11 @@ function requestHandler(req, res) {
             myhostname = stdout;
           }
           console.log(stdout);
-
+// added for sensors
+          res_str = res_str.replace(/lidStat/g, blocking.lidStatus);
+          res_str = res_str.replace(/hopperStat/g, blocking.hopperStatus);
+          res_str = res_str.replace(/bowlStat/g, blocking.bowlStatus);
+//normal replacements            
           res_str = res_str.replace(/params_ip/g, myipaddr);
           res_str = res_str.replace(/params_hostname/g, myhostname);
           res_str = res_str.replace(/time1/g, config.feedingSchedule[0].time);
@@ -319,4 +339,4 @@ function requestHandler(req, res) {
 
 /****************************************************************************/
 
-http.createServer(requestHandler).listen(81);
+http.createServer(requestHandler).listen(8081);
